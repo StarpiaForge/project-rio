@@ -2,6 +2,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 )
 
@@ -44,5 +45,18 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	return c, nil
+	return c, validate(c)
+}
+
+func validate(c *Config) error {
+	if c.API.BaseURL == "" {
+		return fmt.Errorf("API base URL is required")
+	}
+	if c.API.AuthKey == "" {
+		return fmt.Errorf("API auth key is required")
+	}
+	if c.API.RateLimit <= 0 {
+		return fmt.Errorf("API rate limit must be greater than 0")
+	}
+	return nil
 }
